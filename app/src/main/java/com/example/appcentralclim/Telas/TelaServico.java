@@ -2,6 +2,7 @@ package com.example.appcentralclim.Telas;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar; // <-- IMPORTANTE: Importe a Toolbar correta
 
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -16,10 +17,10 @@ import com.example.appcentralclim.R;
 
 public class TelaServico extends AppCompatActivity {
 
-    // 1. Declare os componentes da interface (MODIFICADOS E NOVOS)
-    AutoCompleteTextView autoCompleteClient; // MODIFICADO: de TextInputEditText para AutoCompleteTextView
+    // 1. Declaração dos componentes da interface (continua a mesma)
+    AutoCompleteTextView autoCompleteClient;
     TextInputEditText editTextDescription;
-    TextInputEditText editTextValue; // NOVO: Campo para o valor
+    TextInputEditText editTextValue;
     AutoCompleteTextView autoCompleteEmployee;
     Button buttonAddService;
 
@@ -28,24 +29,28 @@ public class TelaServico extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tela_servico);
 
-        // --- NOVO: Configuração do Botão Voltar (ActionBar) ---
+        // --- MODIFICADO: Configuração da Toolbar Customizada ---
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar); // Define nossa toolbar como a action bar da tela
+
+        // Pega a ActionBar que agora é a nossa Toolbar
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
-            actionBar.setDisplayHomeAsUpEnabled(true);
-            actionBar.setTitle("Adicionar Novo Serviço"); // Opcional: define um título para a tela
+            actionBar.setDisplayHomeAsUpEnabled(true); // Habilita o botão de voltar
+            actionBar.setTitle(""); // Define o título
+            // Usamos o nome exato do seu ícone
+            actionBar.setHomeAsUpIndicator(R.drawable.botao_voltar);
         }
 
         // 2. Conecte os componentes declarados com os IDs do XML
-        autoCompleteClient = findViewById(R.id.autoCompleteClient); // MODIFICADO: Novo ID
+        autoCompleteClient = findViewById(R.id.autoCompleteClient);
         editTextDescription = findViewById(R.id.editTextDescription);
-        editTextValue = findViewById(R.id.editTextValue); // NOVO: Conexão do campo de valor
+        editTextValue = findViewById(R.id.editTextValue);
         autoCompleteEmployee = findViewById(R.id.autoCompleteEmployee);
         buttonAddService = findViewById(R.id.buttonAddService);
 
-        // --- NOVO: Configuração do Seletor de Clientes ---
+        // --- Configuração dos Seletores ---
         setupClientSelector();
-
-        // --- Configuração do Seletor de Funcionários ---
         setupEmployeeSelector();
 
         // --- Ação do Botão ---
@@ -70,7 +75,7 @@ public class TelaServico extends AppCompatActivity {
         });
     }
 
-    // NOVO: Método para configurar o seletor de clientes
+    // Método para configurar o seletor de clientes
     private void setupClientSelector() {
         String[] clientes = new String[] {
                 "Empresa A",
@@ -82,7 +87,7 @@ public class TelaServico extends AppCompatActivity {
         autoCompleteClient.setAdapter(clientAdapter);
     }
 
-    // MODIFICADO: Lógica do seletor de funcionários movida para um método próprio para organização
+    // Método para configurar o seletor de funcionários
     private void setupEmployeeSelector() {
         String[] funcionarios = new String[] {
                 "João da Silva",
@@ -94,10 +99,9 @@ public class TelaServico extends AppCompatActivity {
         autoCompleteEmployee.setAdapter(employeeAdapter);
     }
 
-    // --- NOVO: Método para lidar com o clique no botão de voltar ---
+    // Método para lidar com o clique no botão de voltar (continua o mesmo e funciona com a Toolbar)
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-
         if (item.getItemId() == android.R.id.home) {
             onBackPressed(); // Fecha a atividade atual e volta para a anterior
             return true;
