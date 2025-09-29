@@ -2,8 +2,9 @@ package com.example.appcentralclim.Telas;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar; // <-- IMPORTANTE: Importe a Toolbar correta
+import androidx.appcompat.widget.Toolbar;
 
+import android.content.Intent; // <-- Import para a funcionalidade de navegação
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
@@ -17,57 +18,66 @@ import com.example.appcentralclim.R;
 
 public class TelaServico extends AppCompatActivity {
 
-    // 1. Declaração dos componentes da interface (continua a mesma)
+    // Declaração dos componentes da interface
     AutoCompleteTextView autoCompleteClient;
     TextInputEditText editTextDescription;
     TextInputEditText editTextValue;
     AutoCompleteTextView autoCompleteEmployee;
     Button buttonAddService;
 
+    // Variável para o link de cadastro
+    Button linkNovoCliente;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tela_servico);
 
-        // --- MODIFICADO: Configuração da Toolbar Customizada ---
+        // Configuração da Toolbar Customizada
         Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar); // Define nossa toolbar como a action bar da tela
-
-        // Pega a ActionBar que agora é a nossa Toolbar
+        setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
-            actionBar.setDisplayHomeAsUpEnabled(true); // Habilita o botão de voltar
-            actionBar.setTitle(""); // Define o título
-            // Usamos o nome exato do seu ícone
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setTitle(""); // Título vazio para usar o TextView centralizado
             actionBar.setHomeAsUpIndicator(R.drawable.botao_voltar);
         }
 
-        // 2. Conecte os componentes declarados com os IDs do XML
+        // Conecte os componentes declarados com os IDs do XML
         autoCompleteClient = findViewById(R.id.autoCompleteClient);
         editTextDescription = findViewById(R.id.editTextDescription);
         editTextValue = findViewById(R.id.editTextValue);
         autoCompleteEmployee = findViewById(R.id.autoCompleteEmployee);
         buttonAddService = findViewById(R.id.buttonAddService);
 
-        // --- Configuração dos Seletores ---
+        // Conecta a variável ao link do layout
+        linkNovoCliente = findViewById(R.id.linkNovoCliente);
+
+        // Configuração dos Seletores
         setupClientSelector();
         setupEmployeeSelector();
 
-        // --- Ação do Botão ---
+        // Ação de clique para o link de cadastro de cliente
+        linkNovoCliente.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(TelaServico.this, CadastrarClienteActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        // Ação do Botão "Adicionar Serviço"
         buttonAddService.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // 7. Obtenha os valores dos campos
                 String selectedClient = autoCompleteClient.getText().toString();
                 String description = editTextDescription.getText().toString();
                 String value = editTextValue.getText().toString();
                 String selectedEmployee = autoCompleteEmployee.getText().toString();
 
-                // 8. Valide se os campos não estão vazios
                 if (selectedClient.isEmpty() || description.trim().isEmpty() || value.trim().isEmpty() || selectedEmployee.isEmpty()) {
                     Toast.makeText(TelaServico.this, "Por favor, preencha todos os campos.", Toast.LENGTH_SHORT).show();
                 } else {
-                    // Lógica para salvar o serviço
                     String successMessage = "Serviço de R$" + value + " para '" + selectedClient + "' atribuído a '" + selectedEmployee + "'.";
                     Toast.makeText(TelaServico.this, successMessage, Toast.LENGTH_LONG).show();
                 }
@@ -99,11 +109,11 @@ public class TelaServico extends AppCompatActivity {
         autoCompleteEmployee.setAdapter(employeeAdapter);
     }
 
-    // Método para lidar com o clique no botão de voltar (continua o mesmo e funciona com a Toolbar)
+    // Método para lidar com o clique no botão de voltar
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
-            onBackPressed(); // Fecha a atividade atual e volta para a anterior
+            onBackPressed();
             return true;
         }
         return super.onOptionsItemSelected(item);

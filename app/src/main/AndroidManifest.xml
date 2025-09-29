@@ -11,7 +11,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCentralclim">
-
+        <activity
+            android:name=".Telas.CadastrarClienteActivity"
+            android:exported="false" />
         <activity
             android:name=".MainActivity"
             android:exported="true">
@@ -21,12 +23,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".Telas.TelaServico"
             android:exported="false"
             android:parentActivityName=".MainActivity" />
-
     </application>
 
 </manifest>
