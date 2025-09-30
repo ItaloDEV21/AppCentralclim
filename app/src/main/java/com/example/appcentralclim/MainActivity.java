@@ -24,6 +24,10 @@ public class MainActivity extends AppCompatActivity {
     private TextView toggleModeText;
     private ProgressBar progressBar;
 
+    // --- NOVAS CREDENCIAIS DE TESTE (Admin) ---
+    private static final String ADMIN_EMAIL = "admin@clima.com";
+    private static final String ADMIN_PASSWORD = "admin123";
+
     // Sessão
     private static final String PREFS_NAME = "CentralClimSession";
     private static final String KEY_EMAIL = "user_email";
@@ -77,8 +81,8 @@ public class MainActivity extends AppCompatActivity {
      * Valida os campos e simula login/cadastro
      */
     private void handleAuth() {
-        String email = inputEmail.getText().toString().trim();
-        String password = inputPassword.getText().toString().trim();
+        final String email = inputEmail.getText().toString().trim();
+        final String password = inputPassword.getText().toString().trim();
 
         // Validação básica
         if (TextUtils.isEmpty(email)) {
@@ -99,18 +103,40 @@ public class MainActivity extends AppCompatActivity {
             progressBar.setVisibility(View.GONE);
             btnAuthAction.setEnabled(true);
 
-            // Simula sucesso de login/cadastro
-            String mensagem = isLoginMode ? "Login realizado!" : "Cadastro realizado!";
-            Toast.makeText(MainActivity.this, mensagem, Toast.LENGTH_SHORT).show();
+            if (isLoginMode) {
+                // --- LÓGICA DE TESTE DE LOGIN ---
+                if (email.equals(ADMIN_EMAIL) && password.equals(ADMIN_PASSWORD)) {
 
-            // Salva sessão
-            SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
-            prefs.edit().putString(KEY_EMAIL, email).apply();
+                    // LOGIN BEM-SUCEDIDO (ADMIN)
+                    Toast.makeText(MainActivity.this, "Login Admin realizado!", Toast.LENGTH_SHORT).show();
 
-            // Vai para tela do Admin
-            Intent intent = new Intent(MainActivity.this, AdminActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startActivity(intent);
+                    // Salva sessão
+                    SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+                    prefs.edit().putString(KEY_EMAIL, email).apply();
+
+                    // Vai para a tela de Administração
+                    Intent intent = new Intent(MainActivity.this, AdminActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(intent);
+
+                } else {
+                    // LOGIN FALHOU
+                    Toast.makeText(MainActivity.this, "Falha no Login: E-mail ou Senha incorretos.", Toast.LENGTH_SHORT).show();
+                }
+
+            } else {
+                // --- LÓGICA DE SIMULAÇÃO DE CADASTRO (Mantida como estava) ---
+                Toast.makeText(MainActivity.this, "Cadastro realizado!", Toast.LENGTH_SHORT).show();
+
+                // Salva sessão (assumindo que o cadastro faz login automático)
+                SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+                prefs.edit().putString(KEY_EMAIL, email).apply();
+
+                // Vai para tela de Administração após o cadastro
+                Intent intent = new Intent(MainActivity.this, AdminActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+            }
 
         }, 2000); // Simula carregamento por 2s
     }
