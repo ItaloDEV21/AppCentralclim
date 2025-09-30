@@ -12,6 +12,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCentralclim">
         <activity
+            android:name=".Telas.AdminActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Telas.TelaAdmin"
+            android:exported="false" />
+        <activity
             android:name=".Telas.CadastrarClienteActivity"
             android:exported="false" />
         <activity

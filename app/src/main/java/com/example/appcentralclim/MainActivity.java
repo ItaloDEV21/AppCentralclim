@@ -1,39 +1,117 @@
-package com.example.appcentralclim; // Verifique se o nome do seu pacote está correto
+package com.example.appcentralclim;
+
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.os.Bundle;
+import android.os.Handler;
+import android.text.TextUtils;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ProgressBar;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Intent; // <-- Import necessário para "Intent"
-import android.os.Bundle;
-import android.view.View;
-import android.widget.Button; // <-- Import necessário para "Button"
-
-import com.example.appcentralclim.Telas.TelaServico; // <-- Import da sua TelaServico
+import com.example.appcentralclim.Telas.AdminActivity;
 
 public class MainActivity extends AppCompatActivity {
 
-    // 1. Declare o botão
-    Button buttonGoToService;
+    // Views
+    private EditText inputEmail, inputPassword;
+    private Button btnAuthAction;
+    private TextView toggleModeText;
+    private ProgressBar progressBar;
+
+    // Sessão
+    private static final String PREFS_NAME = "CentralClimSession";
+    private static final String KEY_EMAIL = "user_email";
+
+    // Estado atual da tela (login ou cadastro)
+    private boolean isLoginMode = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_main); // Sua tela de login
 
-        // 2. Conecte o botão da lógica com o botão do layout pelo ID
-        buttonGoToService = findViewById(R.id.buttonGoToService);
+        // Verifica se já está logado
+        SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+        if (prefs.getString(KEY_EMAIL, null) != null) {
+            // Usuário já logado, vai direto para AdminActivity
+            startActivity(new Intent(this, AdminActivity.class));
+            finish();
+        }
 
-        // 3. Crie a ação de clique (OnClickListener)
-        buttonGoToService.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // 4. Crie uma "Intent" para iniciar a nova tela
-                // O Intent é uma "intenção" de ir da tela atual (MainActivity.this)
-                // para a tela de destino (TelaServico.class)
-                Intent intent = new Intent(MainActivity.this, TelaServico.class);
+        // Mapeia componentes
+        inputEmail = findViewById(R.id.input_email);
+        inputPassword = findViewById(R.id.input_password);
+        btnAuthAction = findViewById(R.id.btn_auth_action);
+        toggleModeText = findViewById(R.id.text_toggle_mode);
+        progressBar = findViewById(R.id.progress_bar);
 
-                // 5. Execute a Intent
-                startActivity(intent);
-            }
-        });
+        // Clique no botão de login/cadastro
+        btnAuthAction.setOnClickListener(v -> handleAuth());
+
+        // Alternar entre login/cadastro
+        toggleModeText.setOnClickListener(v -> toggleAuthMode());
+    }
+
+    /**
+     * Alterna o modo login/cadastro
+     */
+    private void toggleAuthMode() {
+        isLoginMode = !isLoginMode;
+
+        if (isLoginMode) {
+            btnAuthAction.setText("ENTRAR");
+            toggleModeText.setText("Não tem uma conta? Cadastre-se aqui.");
+        } else {
+            btnAuthAction.setText("CADASTRAR");
+            toggleModeText.setText("Já tem uma conta? Faça login aqui.");
+        }
+    }
+
+    /**
+     * Valida os campos e simula login/cadastro
+     */
+    private void handleAuth() {
+        String email = inputEmail.getText().toString().trim();
+        String password = inputPassword.getText().toString().trim();
+
+        // Validação básica
+        if (TextUtils.isEmpty(email)) {
+            inputEmail.setError("Digite um e-mail");
+            return;
+        }
+
+        if (TextUtils.isEmpty(password) || password.length() < 6) {
+            inputPassword.setError("A senha precisa ter no mínimo 6 caracteres");
+            return;
+        }
+
+        // Mostrar progresso
+        progressBar.setVisibility(View.VISIBLE);
+        btnAuthAction.setEnabled(false);
+
+        new Handler().postDelayed(() -> {
+            progressBar.setVisibility(View.GONE);
+            btnAuthAction.setEnabled(true);
+
+            // Simula sucesso de login/cadastro
+            String mensagem = isLoginMode ? "Login realizado!" : "Cadastro realizado!";
+            Toast.makeText(MainActivity.this, mensagem, Toast.LENGTH_SHORT).show();
+
+            // Salva sessão
+            SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+            prefs.edit().putString(KEY_EMAIL, email).apply();
+
+            // Vai para tela do Admin
+            Intent intent = new Intent(MainActivity.this, AdminActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+
+        }, 2000); // Simula carregamento por 2s
     }
 }
