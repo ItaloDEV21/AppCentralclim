@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#0A395C"
+    android:padding="24dp"
+    tools:context=".MainActivity">
+
+    <!-- Cores usadas:
+         Background Principal: #0A395C (Azul Escuro)
+         Acento/Botão: #00A8E8 (Ciano Claro)
+         Cor do Card: #18527C (Azul um pouco mais claro que o fundo)
+         Texto: #FFFFFF (Branco)
+    -->
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:paddingBottom="40dp">
+
+            <!-- Espaço para o Logo/Ícone do Aplicativo -->
+            <ImageView
+                android:id="@+id/logo_icon"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:layout_marginTop="32dp"
+                android:src="@drawable/logo"
+                app:tint="#00A8E8"
+                android:contentDescription="Logo CentralClim" />
+
+            <!-- Título Principal -->
+            <TextView
+                android:id="@+id/form_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="Entrar no CentralClim"
+                android:textColor="#FFFFFF"
+                android:textSize="24sp"
+                android:textStyle="bold" />
+
+            <!-- Card de Login/Cadastro -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                app:cardBackgroundColor="#18527C"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="8dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="24dp">
+
+                    <!-- Campo E-mail -->
+                    <com.google.android.material.textfield.TextInputLayout
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="16dp"
+                        app:boxCornerRadiusBottomEnd="12dp"
+                        app:boxCornerRadiusBottomStart="12dp"
+                        app:boxCornerRadiusTopEnd="12dp"
+                        app:boxCornerRadiusTopStart="12dp"
+                        app:boxStrokeColor="#00A8E8"
+                        app:hintTextColor="#FFFFFF"
+                        android:textColorHint="#CCCCCC">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/input_email"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="E-mail"
+                            android:inputType="textEmailAddress"
+                            android:textColor="#FFFFFF"
+                            android:backgroundTint="#18527C"
+                            android:paddingStart="16dp"
+                            android:paddingEnd="16dp"
+                            android:paddingTop="14dp"
+                            android:paddingBottom="14dp"/>
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <!-- Campo Senha -->
+                    <com.google.android.material.textfield.TextInputLayout
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="24dp"
+                        app:boxCornerRadiusBottomEnd="12dp"
+                        app:boxCornerRadiusBottomStart="12dp"
+                        app:boxCornerRadiusTopEnd="12dp"
+                        app:boxCornerRadiusTopStart="12dp"
+                        app:boxStrokeColor="#00A8E8"
+                        app:hintTextColor="#FFFFFF"
+                        android:textColorHint="#CCCCCC"
+                        app:passwordToggleEnabled="true"
+                        app:passwordToggleTint="#00A8E8">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/input_password"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="Senha (mín. 6 caracteres)"
+                            android:inputType="textPassword"
+                            android:textColor="#FFFFFF"
+                            android:backgroundTint="#18527C"
+                            android:paddingStart="16dp"
+                            android:paddingEnd="16dp"
+                            android:paddingTop="14dp"
+                            android:paddingBottom="14dp"/>
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <!-- Botão de Ação -->
+                    <Button
+                        android:id="@+id/btn_auth_action"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="ENTRAR"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:backgroundTint="#00A8E8"
+                        app:cornerRadius="12dp"
+                        android:paddingTop="14dp"
+                        android:paddingBottom="14dp"/>
+
+                    <!-- Link para Cadastro/Login -->
+                    <TextView
+                        android:id="@+id/text_toggle_mode"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginTop="20dp"
+                        android:text="Não tem uma conta? Cadastre-se aqui."
+                        android:textColor="#D3E0EA"
+                        android:textSize="14sp"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:textAlignment="center"/>
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+        </LinearLayout>
+    </ScrollView>
+
+    <!-- Indicador de Carregamento (Oculto por padrão) -->
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:indeterminateTint="#00A8E8"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
