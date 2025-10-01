@@ -12,6 +12,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCentralclim">
         <activity
+            android:name=".Telas.CadastroActivity"
+            android:exported="false" />
+        <activity
             android:name=".Telas.AdminActivity"
             android:exported="false" />
         <activity
