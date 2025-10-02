@@ -3,6 +3,8 @@ package com.example.appcentralclim.dao;
 import com.example.appcentralclim.model.Cliente;
 import com.example.appcentralclim.model.Funcionario;
 import com.example.appcentralclim.model.Servico;
+import com.example.appcentralclim.model.Usuario;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,12 +17,18 @@ public class MockDAO {
     // --- Métodos de Clientes e Funcionários (Mantidos) ---
     public List<Cliente> buscarClientes() {
         // ... (sua lógica existente de clientes)
-        return new ArrayList<>(); // Retornar a lógica real aqui
+        // Para fins de teste, vou adicionar um cliente aqui para garantir que a lista não esteja vazia
+        List<Cliente> clientes = new ArrayList<>();
+        clientes.add(new Cliente(1, "Empresa A"));
+        return clientes;
     }
 
     public List<Funcionario> buscarFuncionarios() {
         // ... (sua lógica existente de funcionários)
-        return new ArrayList<>(); // Retornar a lógica real aqui
+        // Para fins de teste, vou adicionar o funcionário logado
+        List<Funcionario> funcionarios = new ArrayList<>();
+        funcionarios.add(new Funcionario(101, "João da Silva"));
+        return funcionarios;
     }
 
     // --- NOVOS MÉTODOS PARA SERVIÇOS ---
@@ -39,10 +47,25 @@ public class MockDAO {
         servicosDatabase.add(novoServico);
     }
 
-    public List<Servico> buscarTodosServicos() {
-        // Simula a busca de todos os serviços
-        return servicosDatabase;
+    // MÉTODO ATUALIZADO PARA FILTRO
+    public List<Servico> buscarServicos(String nomeFuncionario) {
+        // Se o nomeFuncionario for null ou vazio, retorna a lista completa (Relatório Geral)
+        if (nomeFuncionario == null || nomeFuncionario.isEmpty()) {
+            return servicosDatabase; // Retorna todos os serviços
+        }
+
+        // Se houver filtro, retorna apenas os serviços daquele funcionário
+        List<Servico> servicosFiltrados = new ArrayList<>();
+        for (Servico servico : servicosDatabase) {
+            // A comparação precisa ser exata
+            if (servico.getNomeFuncionario().equals(nomeFuncionario)) {
+                servicosFiltrados.add(servico);
+            }
+        }
+        return servicosFiltrados;
     }
+
+    // O antigo 'buscarTodosServicos()' foi substituído pelo 'buscarServicos(null)'
 
     // NOVO MÉTODO: Atualiza o status de um serviço pelo ID
     public boolean atualizarStatusServico(long idServico, String novoStatus) {
@@ -68,5 +91,25 @@ public class MockDAO {
         }
         return false;
     }
+
+    // NOVO MÉTODO PARA SIMULAR O LOGIN
+    public Usuario autenticarUsuario(String email, String senha) {
+        // 1. Simulação do Admin
+        if (email.equals("admin@clima.com") && senha.equals("admin123")) {
+            // **NOTA: Usei as credenciais do seu código (ADMIN_EMAIL, ADMIN_PASSWORD)**
+            return new Usuario(1, "Administrador Geral", "ADMIN");
+        }
+
+        // 2. Simulação do Funcionário
+        if (email.equals("joao@clima.com") && senha.equals("123456")) {
+            // Se for funcionário, retorna o objeto com o tipo "FUNCIONARIO"
+            // Usei "joao@clima.com" e "123456" como credenciais de exemplo para o funcionário
+            return new Usuario(101, "João da Silva", "FUNCIONARIO");
+        }
+
+        // Se a autenticação falhar, retorna nulo
+        return null;
+    }
+
 
 }

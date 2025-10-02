@@ -12,6 +12,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCentralclim">
         <activity
+            android:name=".Telas.FuncionarioActivity"
+            android:exported="false" />
+        <activity
             android:name=".Telas.RelatoriosActivity"
             android:exported="false" />
         <activity

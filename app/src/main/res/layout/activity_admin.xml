@@ -73,6 +73,17 @@
             android:padding="15dp"
             android:textSize="18sp"/>
 
+        <Button
+            android:id="@+id/btn_logout_admin"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:text="SAIR DO SISTEMA"
+            android:textColor="#FFFFFF"
+            android:textStyle="bold"
+            android:textSize="16sp"/>
+
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
