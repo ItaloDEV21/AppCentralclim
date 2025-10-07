@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="#0A395C"
     android:padding="24dp"
-    tools:context=".MainActivity">
+    tools:context=".LoginActivity">
 
     <!-- Cores usadas:
          Background Principal: #0A395C (Azul Escuro)

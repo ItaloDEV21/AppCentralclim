@@ -12,16 +12,26 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCentralclim">
         <activity
-            android:name=".Telas.AdminActivity"
+            android:name=".Telas.CadastrarFuncionarioActivity"
             android:exported="false" />
         <activity
-            android:name=".Telas.TelaAdmin"
+            android:name=".Telas.FuncionarioActivity"
             android:exported="false" />
+        <activity
+            android:name=".Telas.RelatoriosActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Telas.CadastroActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Telas.AdminActivity"
+            android:exported="false" />
+
         <activity
             android:name=".Telas.CadastrarClienteActivity"
             android:exported="false" />
         <activity
-            android:name=".MainActivity"
+            android:name=".LoginActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -32,7 +42,7 @@
         <activity
             android:name=".Telas.TelaServico"
             android:exported="false"
-            android:parentActivityName=".MainActivity" />
+            android:parentActivityName=".LoginActivity" />
     </application>
 
 </manifest>
