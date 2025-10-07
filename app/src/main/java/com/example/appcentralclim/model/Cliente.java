@@ -13,6 +13,10 @@ public class Cliente {
         return id;
     }
 
+    public String getNome() {
+        return nome;
+    }
+
     // O AutoCompleteTextView usará este método para exibir o nome.
     @Override
     public String toString() {

@@ -23,13 +23,13 @@ public class MockDAO {
         return clientes;
     }
 
-    public List<Funcionario> buscarFuncionarios() {
+   // public List<Funcionario> buscarFuncionarios() {
         // ... (sua lógica existente de funcionários)
         // Para fins de teste, vou adicionar o funcionário logado
-        List<Funcionario> funcionarios = new ArrayList<>();
-        funcionarios.add(new Funcionario(101, "João da Silva"));
-        return funcionarios;
-    }
+   //     List<Funcionario> funcionarios = new ArrayList<>();
+   //     funcionarios.add(new Funcionario(101, "João da Silva"));
+   //     return funcionarios;
+   // }
 
     // --- NOVOS MÉTODOS PARA SERVIÇOS ---
 

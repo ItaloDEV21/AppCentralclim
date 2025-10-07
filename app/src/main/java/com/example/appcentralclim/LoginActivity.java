@@ -20,7 +20,7 @@ import com.example.appcentralclim.Telas.FuncionarioActivity; // Assumindo que vo
 import com.example.appcentralclim.dao.MockDAO;
 import com.example.appcentralclim.model.Usuario; // O modelo que criamos
 
-public class MainActivity extends AppCompatActivity {
+public class LoginActivity extends AppCompatActivity {
 
     // Views
     private EditText inputEmail, inputPassword;
@@ -40,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main); // Sua tela de login
+        setContentView(R.layout.activity_login); // Sua tela de login
 
         // Verifica se já está logado
         SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
@@ -115,7 +115,7 @@ public class MainActivity extends AppCompatActivity {
 
                 if (usuarioLogado != null) {
 
-                    Toast.makeText(MainActivity.this, "Login efetuado: " + usuarioLogado.getTipoUsuario(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(LoginActivity.this, "Login efetuado: " + usuarioLogado.getTipoUsuario(), Toast.LENGTH_SHORT).show();
 
                     // Salva sessão (usando o email como identificador)
                     SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
@@ -125,17 +125,17 @@ public class MainActivity extends AppCompatActivity {
 
                     if (usuarioLogado.getTipoUsuario().equals("ADMIN")) {
                         // Redireciona para o Painel Administrativo
-                        intent = new Intent(MainActivity.this, AdminActivity.class);
+                        intent = new Intent(LoginActivity.this, AdminActivity.class);
 
                     } else if (usuarioLogado.getTipoUsuario().equals("FUNCIONARIO")) {
                         // Redireciona para o Painel do Funcionário
-                        intent = new Intent(MainActivity.this, FuncionarioActivity.class);
+                        intent = new Intent(LoginActivity.this, FuncionarioActivity.class);
                         // PASSAR O NOME É CRUCIAL PARA O FILTRO DE SERVIÇOS
                         intent.putExtra(FuncionarioActivity.EXTRA_FILTRO_FUNCIONARIO, usuarioLogado.getNome());
 
                     } else {
                         // Perfil inválido (teoricamente nunca acontece, mas é bom ter)
-                        Toast.makeText(MainActivity.this, "Erro: Perfil desconhecido.", Toast.LENGTH_LONG).show();
+                        Toast.makeText(LoginActivity.this, "Erro: Perfil desconhecido.", Toast.LENGTH_LONG).show();
                         return;
                     }
 
@@ -144,12 +144,12 @@ public class MainActivity extends AppCompatActivity {
 
                 } else {
                     // LOGIN FALHOU
-                    Toast.makeText(MainActivity.this, "Falha no Login: E-mail ou Senha incorretos.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(LoginActivity.this, "Falha no Login: E-mail ou Senha incorretos.", Toast.LENGTH_SHORT).show();
                 }
 
             } else {
                 // --- LÓGICA DE SIMULAÇÃO DE CADASTRO ---
-                Toast.makeText(MainActivity.this, "Cadastro realizado! Faça login.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(LoginActivity.this, "Cadastro realizado! Faça login.", Toast.LENGTH_SHORT).show();
                 // Após o cadastro, o ideal é ir para o login ou direto para uma tela padrão.
                 toggleAuthMode(); // Volta para o modo Login
             }

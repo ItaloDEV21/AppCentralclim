@@ -8,11 +8,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences; // Import necessário
 import android.os.Bundle;
-import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.Toast;
 
-import com.example.appcentralclim.MainActivity;
+import com.example.appcentralclim.LoginActivity;
 import com.example.appcentralclim.R;
 
 public class AdminActivity extends AppCompatActivity {
@@ -62,7 +61,8 @@ public class AdminActivity extends AppCompatActivity {
         });
 
         btnCriarFuncionario.setOnClickListener(v -> {
-            // Lógica para cadastrar funcionário
+            Intent intent = new Intent(this, CadastrarFuncionarioActivity.class);
+            startActivity(intent);
         });
 
         btnRelatorios.setOnClickListener(v -> {
@@ -83,7 +83,7 @@ public class AdminActivity extends AppCompatActivity {
         Toast.makeText(this, "Sessão encerrada.", Toast.LENGTH_SHORT).show();
 
         // 2. Navega para a MainActivity e limpa a pilha de atividades
-        Intent intent = new Intent(AdminActivity.this, MainActivity.class);
+        Intent intent = new Intent(AdminActivity.this, LoginActivity.class);
 
         // Estas flags garantem que o usuário não volte para esta tela usando o botão Voltar
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
