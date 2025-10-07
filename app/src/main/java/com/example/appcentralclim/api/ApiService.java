@@ -1,7 +1,7 @@
 package com.example.appcentralclim.api;
 
-import com.example.appcentralclim.model.AtualizarRequest;
-import com.example.appcentralclim.model.CriarServicoRequest;
+import com.example.appcentralclim.request.AtualizarRequest;
+import com.example.appcentralclim.request.CriarServicoRequest;
 import com.example.appcentralclim.model.Servico;
 import com.example.appcentralclim.model.Cliente;
 import com.example.appcentralclim.model.Funcionario;

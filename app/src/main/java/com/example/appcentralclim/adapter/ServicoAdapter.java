@@ -1,12 +1,11 @@
 package com.example.appcentralclim.adapter;
-// ServicoAdapter.java
 
 import android.content.Context;
 import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button; // NOVO IMPORT
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -19,17 +18,15 @@ import java.util.List;
 
 public class ServicoAdapter extends RecyclerView.Adapter<ServicoAdapter.ServicoViewHolder> {
 
-    // --- NOVA INTERFACE DE CLIQUE ---
+    // Interface para ação no botão "Concluir"
     public interface OnServicoActionListener {
         void onConcluirClicked(long servicoId);
     }
-    // ---------------------------------
 
     private final List<Servico> listaServicos;
     private final Context context;
-    private final OnServicoActionListener listener; // NOVO CAMPO
+    private final OnServicoActionListener listener;
 
-    // Construtor atualizado para receber o Listener
     public ServicoAdapter(Context context, List<Servico> listaServicos, OnServicoActionListener listener) {
         this.context = context;
         this.listaServicos = listaServicos;
@@ -47,38 +44,47 @@ public class ServicoAdapter extends RecyclerView.Adapter<ServicoAdapter.ServicoV
     public void onBindViewHolder(@NonNull ServicoViewHolder holder, int position) {
         Servico servico = listaServicos.get(position);
 
-        // 1. Preenche os dados
-        holder.textClienteNome.setText("Cliente: " + servico.getNomeCliente());
-        holder.textFuncionario.setText("Técnico: " + servico.getNomeFuncionario());
-        holder.textDescricao.setText("Descrição: " + servico.getDescricao());
-        holder.textValor.setText("R$ " + servico.getValor());
-        holder.textStatus.setText(servico.getStatus());
-
-        // 2. Lógica de cores para o Status
-        // ... (Seu código de cores existente)
-        switch (servico.getStatus()) {
-            case "Concluído":
-                holder.textStatus.setTextColor(Color.parseColor("#4CAF50")); // Verde
-                break;
-            case "Em Andamento":
-                holder.textStatus.setTextColor(Color.parseColor("#2196F3")); // Azul
-                break;
-            case "Pendente":
-            default:
-                holder.textStatus.setTextColor(Color.parseColor("#FF9800")); // Laranja
-                break;
+        // Cliente
+        if (servico.getCliente() != null) {
+            holder.textClienteNome.setText("Cliente: " + servico.getCliente().getNome());
+        } else {
+            holder.textClienteNome.setText("Cliente: -");
         }
 
-        // 3. Lógica do Botão de Conclusão e Visibilidade
-        if (servico.getStatus().equals("Concluído")) {
-            // Se o serviço já está concluído, esconde o botão
+        // Funcionário
+        if (servico.getUsuario() != null) {
+            holder.textFuncionario.setText("Técnico: " + servico.getUsuario().getNome());
+        } else {
+            holder.textFuncionario.setText("Técnico: -");
+        }
+
+        // Descrição, Valor e Status
+        holder.textDescricao.setText("Descrição: " + servico.getDescricao());
+        holder.textValor.setText("R$ " + (servico.getValor() != null ? servico.getValor() : "0.00"));
+        holder.textStatus.setText(servico.getStatus());
+
+        // Cor do status
+        if (servico.getStatus() != null) {
+            switch (servico.getStatus().toUpperCase()) {
+                case "CONCLUIDO":
+                    holder.textStatus.setTextColor(Color.parseColor("#4CAF50")); // Verde
+                    break;
+                case "EM_ANDAMENTO":
+                    holder.textStatus.setTextColor(Color.parseColor("#2196F3")); // Azul
+                    break;
+                default:
+                    holder.textStatus.setTextColor(Color.parseColor("#FF9800")); // Laranja
+                    break;
+            }
+        }
+
+        // Botão concluir
+        if ("CONCLUIDO".equalsIgnoreCase(servico.getStatus())) {
             holder.btnConcluirServico.setVisibility(View.GONE);
         } else {
-            // Se o serviço está Pendente/Em Andamento, mostra o botão e configura o clique
             holder.btnConcluirServico.setVisibility(View.VISIBLE);
             holder.btnConcluirServico.setOnClickListener(v -> {
                 if (listener != null) {
-                    // Chama o método na Activity, passando o ID do serviço
                     listener.onConcluirClicked(servico.getId());
                 }
             });
@@ -96,10 +102,9 @@ public class ServicoAdapter extends RecyclerView.Adapter<ServicoAdapter.ServicoV
         notifyDataSetChanged();
     }
 
-    // ViewHolder: Mapeia as Views do item_servico.xml
     public static class ServicoViewHolder extends RecyclerView.ViewHolder {
         TextView textClienteNome, textFuncionario, textDescricao, textValor, textStatus;
-        Button btnConcluirServico; // NOVO COMPONENTE
+        Button btnConcluirServico;
 
         public ServicoViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -108,7 +113,7 @@ public class ServicoAdapter extends RecyclerView.Adapter<ServicoAdapter.ServicoV
             textDescricao = itemView.findViewById(R.id.text_descricao);
             textValor = itemView.findViewById(R.id.text_valor);
             textStatus = itemView.findViewById(R.id.text_status);
-            btnConcluirServico = itemView.findViewById(R.id.btn_concluir_servico); // MAPEAMENTO
+            btnConcluirServico = itemView.findViewById(R.id.btn_concluir_servico);
         }
     }
 }

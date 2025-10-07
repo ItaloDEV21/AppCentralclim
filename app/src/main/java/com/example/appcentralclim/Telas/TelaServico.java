@@ -14,6 +14,7 @@ import com.example.appcentralclim.adapter.ServicoAdapter;
 import com.example.appcentralclim.api.ApiClient;
 import com.example.appcentralclim.api.ApiService;
 import com.example.appcentralclim.model.Servico;
+import com.example.appcentralclim.request.AtualizarRequest;
 
 import java.util.List;
 
@@ -53,7 +54,13 @@ public class TelaServico extends AppCompatActivity {
 
                 if (response.isSuccessful() && response.body() != null) {
                     List<Servico> lista = response.body();
-                    servicoAdapter = new ServicoAdapter(lista);
+
+                    servicoAdapter = new ServicoAdapter(
+                            TelaServico.this, // contexto
+                            lista,            // lista
+                            servicoId -> concluirServico(servicoId) // listener
+                    );
+
                     recyclerViewServicos.setAdapter(servicoAdapter);
                 } else {
                     Toast.makeText(TelaServico.this, "Erro ao carregar serviços", Toast.LENGTH_SHORT).show();
@@ -63,6 +70,28 @@ public class TelaServico extends AppCompatActivity {
             @Override
             public void onFailure(Call<List<Servico>> call, Throwable t) {
                 progressBar.setVisibility(View.GONE);
+                Toast.makeText(TelaServico.this, "Falha: " + t.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    // Método chamado quando clicar no botão "Concluir" de um serviço
+    private void concluirServico(long servicoId) {
+        AtualizarRequest request = new AtualizarRequest("CONCLUIDO");
+
+        api.atualizarStatus(servicoId, request).enqueue(new Callback<Servico>() {
+            @Override
+            public void onResponse(Call<Servico> call, Response<Servico> response) {
+                if (response.isSuccessful()) {
+                    Toast.makeText(TelaServico.this, "Serviço concluído!", Toast.LENGTH_SHORT).show();
+                    carregarServicos(); // Atualiza lista após concluir
+                } else {
+                    Toast.makeText(TelaServico.this, "Erro ao concluir serviço", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Servico> call, Throwable t) {
                 Toast.makeText(TelaServico.this, "Falha: " + t.getMessage(), Toast.LENGTH_LONG).show();
             }
         });

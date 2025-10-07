@@ -45,7 +45,6 @@ public class CadastrarClienteActivity extends AppCompatActivity {
         editTextEmail = findViewById(R.id.editTextEmail);
         editTextEndereco = findViewById(R.id.editTextEndereco);
         editTextTelefone = findViewById(R.id.editTextTelefone);
-        editTextCpfCnpj = findViewById(R.id.editTextCpfCnpj);
         buttonCadastrar = findViewById(R.id.buttonCadastrar);
 
         // Ação do botão cadastrar
