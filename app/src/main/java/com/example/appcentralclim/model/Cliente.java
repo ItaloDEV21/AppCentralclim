@@ -1,25 +1,25 @@
 package com.example.appcentralclim.model;
 
 public class Cliente {
-    private long id;
+    private Long id;
     private String nome;
+    private String email;
+    private String telefone;
+    private String endereco;
 
-    public Cliente(long id, String nome) {
-        this.id = id;
-        this.nome = nome;
-    }
+    // Getters e Setters
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
-    public long getId() {
-        return id;
-    }
+    public String getNome() { return nome; }
+    public void setNome(String nome) { this.nome = nome; }
 
-    public String getNome() {
-        return nome;
-    }
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
 
-    // O AutoCompleteTextView usará este método para exibir o nome.
-    @Override
-    public String toString() {
-        return nome;
-    }
+    public String getTelefone() { return telefone; }
+    public void setTelefone(String telefone) { this.telefone = telefone; }
+
+    public String getEndereco() { return endereco; }
+    public void setEndereco(String endereco) { this.endereco = endereco; }
 }

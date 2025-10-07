@@ -100,24 +100,6 @@
                     android:inputType="phone" />
             </com.google.android.material.textfield.TextInputLayout>
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/textFieldCpfCnpj"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:hint="CPF ou CNPJ"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/textFieldTelefone">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/editTextCpfCnpj"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="number" />
-            </com.google.android.material.textfield.TextInputLayout>
-
             <Button
                 android:id="@+id/buttonCadastrar"
                 android:layout_width="0dp"
@@ -128,7 +110,7 @@
                 android:backgroundTint="@color/meu_azul_botao"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/textFieldCpfCnpj" />
+                app:layout_constraintTop_toBottomOf="@id/textFieldTelefone" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>

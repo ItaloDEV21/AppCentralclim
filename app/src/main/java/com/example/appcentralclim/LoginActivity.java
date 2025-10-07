@@ -3,157 +3,129 @@ package com.example.appcentralclim;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Handler;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-// IMPORTAÇÕES NECESSÁRIAS PARA O REDIRECIONAMENTO E DAO
 import com.example.appcentralclim.Telas.AdminActivity;
-import com.example.appcentralclim.Telas.FuncionarioActivity; // Assumindo que você criou esta classe
-import com.example.appcentralclim.dao.MockDAO;
-import com.example.appcentralclim.model.Usuario; // O modelo que criamos
+import com.example.appcentralclim.Telas.FuncionarioActivity;
+import com.example.appcentralclim.api.ApiClient;
+import com.example.appcentralclim.api.ApiService;
+import com.example.appcentralclim.model.LoginRequest;
+import com.example.appcentralclim.model.LoginResponse;
+import com.google.android.material.textfield.TextInputEditText;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class LoginActivity extends AppCompatActivity {
 
-    // Views
-    private EditText inputEmail, inputPassword;
-    private Button btnAuthAction;
-    private TextView toggleModeText;
-    private ProgressBar progressBar;
-
-    // Removemos ADMIN_EMAIL e ADMIN_PASSWORD pois a autenticação é feita pelo DAO
-
-    // Sessão
     private static final String PREFS_NAME = "CentralClimSession";
     private static final String KEY_EMAIL = "user_email";
+    private static final String KEY_PERFIL = "user_perfil";
+    private static final String KEY_NOME = "user_nome";
+    private static final String KEY_TOKEN = "user_token";
 
-    // Estado atual da tela (login ou cadastro)
-    private boolean isLoginMode = true;
+    private TextInputEditText inputEmail, inputPassword;
+    private Button btnLogin;
+    private ProgressBar progressBar;
+
+    private ApiService api;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login); // Sua tela de login
+        setContentView(R.layout.activity_login);
 
-        // Verifica se já está logado
+        // Se já estiver logado
         SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
         if (prefs.getString(KEY_EMAIL, null) != null) {
-            // Usuário já logado, tenta pegar o perfil salvo e redirecionar (melhoria futura)
-            // Por enquanto, apenas redireciona para AdminActivity (comportamento atual)
-            startActivity(new Intent(this, AdminActivity.class));
-            finish();
-            return; // Termina o onCreate
+            redirecionarUsuario(prefs.getString(KEY_PERFIL, ""), prefs.getString(KEY_NOME, ""));
+            return;
         }
 
-        // Mapeia componentes
         inputEmail = findViewById(R.id.input_email);
         inputPassword = findViewById(R.id.input_password);
-        btnAuthAction = findViewById(R.id.btn_auth_action);
-        toggleModeText = findViewById(R.id.text_toggle_mode);
+        btnLogin = findViewById(R.id.btn_auth_action);
         progressBar = findViewById(R.id.progress_bar);
 
-        // Clique no botão de login/cadastro
-        btnAuthAction.setOnClickListener(v -> handleAuth());
+        api = ApiClient.getClient().create(ApiService.class);
 
-        // Alternar entre login/cadastro
-        toggleModeText.setOnClickListener(v -> toggleAuthMode());
+        btnLogin.setOnClickListener(v -> fazerLogin());
     }
 
-    /**
-     * Alterna o modo login/cadastro
-     */
-    private void toggleAuthMode() {
-        isLoginMode = !isLoginMode;
+    private void fazerLogin() {
+        String email = inputEmail.getText().toString().trim();
+        String senha = inputPassword.getText().toString().trim();
 
-        if (isLoginMode) {
-            btnAuthAction.setText("ENTRAR");
-            toggleModeText.setText("Não tem uma conta? Cadastre-se aqui.");
-        } else {
-            btnAuthAction.setText("CADASTRAR");
-            toggleModeText.setText("Já tem uma conta? Faça login aqui.");
-        }
-    }
-
-    /**
-     * Valida os campos e simula login/cadastro com base no perfil.
-     */
-    private void handleAuth() {
-        final String email = inputEmail.getText().toString().trim();
-        final String password = inputPassword.getText().toString().trim();
-
-        // Validação básica
         if (TextUtils.isEmpty(email)) {
-            inputEmail.setError("Digite um e-mail");
+            inputEmail.setError("Digite o e-mail");
+            return;
+        }
+        if (TextUtils.isEmpty(senha)) {
+            inputPassword.setError("Digite a senha");
             return;
         }
 
-        if (TextUtils.isEmpty(password) || password.length() < 3) { // Reduzi para 3 para o admin123
-            inputPassword.setError("A senha precisa ter no mínimo 3 caracteres");
-            return;
-        }
-
-        // Mostrar progresso
         progressBar.setVisibility(View.VISIBLE);
-        btnAuthAction.setEnabled(false);
+        btnLogin.setEnabled(false);
 
-        new Handler().postDelayed(() -> {
-            progressBar.setVisibility(View.GONE);
-            btnAuthAction.setEnabled(true);
+        LoginRequest request = new LoginRequest(email, senha);
 
-            if (isLoginMode) {
+        api.login(request).enqueue(new Callback<LoginResponse>() {
+            @Override
+            public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
+                progressBar.setVisibility(View.GONE);
+                btnLogin.setEnabled(true);
 
-                // --- NOVA LÓGICA DE AUTENTICAÇÃO E REDIRECIONAMENTO ---
-                MockDAO dao = new MockDAO();
-                Usuario usuarioLogado = dao.autenticarUsuario(email, password);
+                if (response.isSuccessful() && response.body() != null) {
+                    LoginResponse user = response.body();
 
-                if (usuarioLogado != null) {
-
-                    Toast.makeText(LoginActivity.this, "Login efetuado: " + usuarioLogado.getTipoUsuario(), Toast.LENGTH_SHORT).show();
-
-                    // Salva sessão (usando o email como identificador)
+                    // Salvar sessão
                     SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
-                    prefs.edit().putString(KEY_EMAIL, email).apply();
+                    prefs.edit()
+                            .putString(KEY_EMAIL, email)
+                            .putString(KEY_NOME, user.getNome())
+                            .putString(KEY_PERFIL, user.getPerfil())
+                            .putString(KEY_TOKEN, user.getToken())
+                            .apply();
 
-                    Intent intent;
+                    Toast.makeText(LoginActivity.this, "Bem-vindo " + user.getNome(), Toast.LENGTH_SHORT).show();
 
-                    if (usuarioLogado.getTipoUsuario().equals("ADMIN")) {
-                        // Redireciona para o Painel Administrativo
-                        intent = new Intent(LoginActivity.this, AdminActivity.class);
-
-                    } else if (usuarioLogado.getTipoUsuario().equals("FUNCIONARIO")) {
-                        // Redireciona para o Painel do Funcionário
-                        intent = new Intent(LoginActivity.this, FuncionarioActivity.class);
-                        // PASSAR O NOME É CRUCIAL PARA O FILTRO DE SERVIÇOS
-                        intent.putExtra(FuncionarioActivity.EXTRA_FILTRO_FUNCIONARIO, usuarioLogado.getNome());
-
-                    } else {
-                        // Perfil inválido (teoricamente nunca acontece, mas é bom ter)
-                        Toast.makeText(LoginActivity.this, "Erro: Perfil desconhecido.", Toast.LENGTH_LONG).show();
-                        return;
-                    }
-
-                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    startActivity(intent);
+                    redirecionarUsuario(user.getPerfil(), user.getNome());
 
                 } else {
-                    // LOGIN FALHOU
-                    Toast.makeText(LoginActivity.this, "Falha no Login: E-mail ou Senha incorretos.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(LoginActivity.this, "E-mail ou senha inválidos", Toast.LENGTH_SHORT).show();
                 }
-
-            } else {
-                // --- LÓGICA DE SIMULAÇÃO DE CADASTRO ---
-                Toast.makeText(LoginActivity.this, "Cadastro realizado! Faça login.", Toast.LENGTH_SHORT).show();
-                // Após o cadastro, o ideal é ir para o login ou direto para uma tela padrão.
-                toggleAuthMode(); // Volta para o modo Login
             }
 
-        }, 2000); // Simula carregamento por 2s
+            @Override
+            public void onFailure(Call<LoginResponse> call, Throwable t) {
+                progressBar.setVisibility(View.GONE);
+                btnLogin.setEnabled(true);
+                Toast.makeText(LoginActivity.this, "Erro: " + t.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    private void redirecionarUsuario(String perfil, String nome) {
+        Intent intent;
+        if ("ADMIN".equalsIgnoreCase(perfil)) {
+            intent = new Intent(this, AdminActivity.class);
+        } else if ("FUNCIONARIO".equalsIgnoreCase(perfil)) {
+            intent = new Intent(this, FuncionarioActivity.class);
+            intent.putExtra(FuncionarioActivity.EXTRA_FILTRO_FUNCIONARIO, nome);
+        } else {
+            Toast.makeText(this, "Perfil inválido", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+        finish();
     }
 }
